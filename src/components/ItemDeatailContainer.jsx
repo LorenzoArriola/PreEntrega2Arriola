@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const mockData = [
     //Cajas de suscripcion
@@ -55,40 +56,28 @@ const mockData = [
     }
 ];
 
-const ItemListContainer = ({ greeting }) => {
-    const { categoryId } = useParams();
-    const [items, setItems] = useState([]);
+const ItemDetailContainer = () => {
+    const { itemId } = useParams();
+    const [item, setItem] = useState(null);
 
     useEffect(() => {
-        const filteredItems = categoryId 
-            ? mockData.filter(item => item.category === categoryId)
-            : mockData;
-        setItems(filteredItems);
-    }, [categoryId]);
+        const itemDetail = mockData.find(item => item.id === parseInt(itemId));
+        setItem(itemDetail);
+    }, [itemId]);
+
+    if (!item) return <div>Cargando...</div>;
 
     return (
         <div className="container mt-4">
             <div className="row">
                 <div className="col">
-                    <h2>{greeting}</h2>
-                    <div className="row">
-                        {items.map(item => (
-                            <div key={item.id} className="col-md-4">
-                                <div className="card mb-4">
-                                    <img src={item.image} className="card-img-top" alt={item.name} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-                                    <div className="card-body">
-                                        <h5 className="card-title">{item.name}</h5>
-                                        <p className="card-text">{item.description}</p>
-                                        <Link to={`/item/${item.id}`} className="btn btn-primary">Ver detalles</Link>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <h2>{item.name}</h2>
+                    <p>{item.description}</p>
+                    <p>Precio: {item.price}</p>
                 </div>
             </div>
         </div>
     );
 }
 
-export default ItemListContainer;
+export default ItemDetailContainer;
